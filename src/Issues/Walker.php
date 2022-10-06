@@ -23,18 +23,18 @@
  * THE SOFTWARE.
  */
 
-namespace chobie\Jira\Issues;
+namespace Jira\Issues;
 
-use chobie\Jira\Api;
-use chobie\Jira\Api\Result;
 use Exception;
+use Jira\Api;
+use Jira\Api\Result;
 
 class Walker implements \Iterator, \Countable {
 
 	/**
 	 * API.
 	 *
-	 * @var \chobie\Jira\Api
+	 * @var \Jira\Api
 	 */
 	protected $api;
 
@@ -118,7 +118,7 @@ class Walker implements \Iterator, \Countable {
 	/**
 	 * Creates walker instance.
 	 *
-	 * @param \chobie\Jira\Api $api API.
+	 * @param \Jira\Api $api API.
 	 * @param int|null $per_page Per page.
 	 */
 	public function __construct(Api $api, $per_page = null) {
@@ -299,7 +299,7 @@ class Walker implements \Iterator, \Countable {
 	/**
 	 * Sets result.
 	 *
-	 * @param \chobie\Jira\Api\Result $result Result.
+	 * @param \Jira\Api\Result $result Result.
 	 *
 	 * @return void
 	 */

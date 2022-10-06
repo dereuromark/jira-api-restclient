@@ -1,8 +1,10 @@
 <?php
 
-namespace Tests\chobie\Jira;
+namespace Tests\Jira;
 
-use chobie\Jira\Api;
+use Jira\Api;
+use Jira\Api\Authentication\AuthenticationInterface;
+use Jira\Api\Client\ClientInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -18,14 +20,14 @@ class ApiTest extends TestCase {
 	/**
 	 * Api.
 	 *
-	 * @var \chobie\Jira\Api
+	 * @var \Jira\Api
 	 */
 	protected $api;
 
 	/**
 	 * Credential.
 	 *
-	 * @var \chobie\Jira\Api\Authentication\AuthenticationInterface
+	 * @var \Jira\Api\Authentication\AuthenticationInterface
 	 */
 	protected $credential;
 
@@ -41,8 +43,8 @@ class ApiTest extends TestCase {
 	 * @return void
 	 */
 	protected function setUpTest() {
-		$this->credential = $this->prophesize('chobie\Jira\Api\Authentication\AuthenticationInterface')->reveal();
-		$this->client = $this->prophesize('chobie\Jira\Api\Client\ClientInterface');
+		$this->credential = $this->prophesize(AuthenticationInterface::class)->reveal();
+		$this->client = $this->prophesize(ClientInterface::class);
 
 		$this->api = new Api(static::ENDPOINT, $this->credential, $this->client->reveal());
 	}

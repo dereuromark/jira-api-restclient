@@ -23,12 +23,12 @@
  * THE SOFTWARE.
  */
 
-namespace chobie\Jira;
+namespace Jira;
 
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
-use chobie\Jira\Api\Client\ClientInterface;
-use chobie\Jira\Api\Client\CurlClient;
-use chobie\Jira\Api\Result;
+use Jira\Api\Authentication\AuthenticationInterface;
+use Jira\Api\Client\ClientInterface;
+use Jira\Api\Client\CurlClient;
+use Jira\Api\Result;
 
 class Api {
 
@@ -67,14 +67,14 @@ class Api {
 	/**
 	 * Client.
 	 *
-	 * @var \chobie\Jira\Api\Client\ClientInterface
+	 * @var \Jira\Api\Client\ClientInterface
 	 */
 	protected $client;
 
 	/**
 	 * Authentication.
 	 *
-	 * @var \chobie\Jira\Api\Authentication\AuthenticationInterface
+	 * @var \Jira\Api\Authentication\AuthenticationInterface
 	 */
 	protected $authentication;
 
@@ -117,8 +117,8 @@ class Api {
 	 * Create a Jira API client.
 	 *
 	 * @param string $endpoint Endpoint URL.
-	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $authentication Authentication.
-	 * @param \chobie\Jira\Api\Client\ClientInterface|null $client Client.
+	 * @param \Jira\Api\Authentication\AuthenticationInterface $authentication Authentication.
+	 * @param \Jira\Api\Client\ClientInterface|null $client Client.
 	 */
 	public function __construct(
 		$endpoint,
@@ -212,7 +212,7 @@ class Api {
 	 * @param string $issueKey Issue key should be "YOURPROJ-221".
 	 * @param string $expand Expand.
 	 *
-	 * @return \chobie\Jira\Api\Result|array|false
+	 * @return \Jira\Api\Result|array|false
 	 */
 	public function getIssue($issueKey, $expand = '') {
 		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s', $issueKey), ['expand' => $expand]);
@@ -224,7 +224,7 @@ class Api {
 	 * @param string $issueKey Issue key.
 	 * @param array $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|array|false
+	 * @return \Jira\Api\Result|array|false
 	 */
 	public function editIssue($issueKey, array $params = []) {
 		return $this->api(static::REQUEST_PUT, sprintf('/rest/api/2/issue/%s', $issueKey), $params);
@@ -237,7 +237,7 @@ class Api {
 	 * @param bool $deleteSubtasks If all subtask should be deleted
 	 * @param array $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|array|false
+	 * @return \Jira\Api\Result|array|false
 	 */
 	public function deleteIssue($issueKey, bool $deleteSubtasks = true, array $params = []) {
 		$params = [
@@ -274,7 +274,7 @@ class Api {
 	/**
 	 * Returns all projects.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function getProjects() {
 		return $this->api(static::REQUEST_GET, '/rest/api/2/project');
@@ -384,7 +384,7 @@ class Api {
 	 * @param string $issueKey Issue key should be "YOURPROJ-221".
 	 * @param array|string $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|array|false
+	 * @return \Jira\Api\Result|array|false
 	 */
 	public function addComment($issueKey, $params) {
 		if (is_string($params)) {
@@ -403,7 +403,7 @@ class Api {
 	 * @param string $issueKey Issue key should be "YOURPROJ-22".
 	 * @param array $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function getWorklogs($issueKey, array $params = []) {
 		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s/worklog', $issueKey), $params);
@@ -415,7 +415,7 @@ class Api {
 	 * @param string $issueKey
 	 * @param string $time
 	 * @param array $params
-	 * @return \chobie\Jira\Api\Result|array|false
+	 * @return \Jira\Api\Result|array|false
 	 */
 	public function createWorklog($issueKey, $time, array $params = []) {
 		$params = [
@@ -431,7 +431,7 @@ class Api {
 	 * @param string $issueKey
 	 * @param string $worklogId
 	 * @param array $params
-	 * @return \chobie\Jira\Api\Result|array|false
+	 * @return \Jira\Api\Result|array|false
 	 */
 	public function removeWorklog($issueKey, $worklogId, array $params = []) {
 		$params = [
@@ -447,7 +447,7 @@ class Api {
 	 * @param string $issueKey Issue key should be "YOURPROJ-22".
 	 * @param array $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function getTransitions($issueKey, array $params = []) {
 		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s/transitions', $issueKey), $params);
@@ -459,7 +459,7 @@ class Api {
 	 * @param string $issueKey Issue key should be "YOURPROJ-22".
 	 * @param array $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function transition($issueKey, array $params = []) {
 		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/transitions', $issueKey), $params);
@@ -570,7 +570,7 @@ class Api {
 	 * @param string $issue_type Issue type.
 	 * @param array $options Options.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function createIssue($project_key, $summary, $issue_type, array $options = []) {
 		$default = [
@@ -596,7 +596,7 @@ class Api {
 	 * @param int $max_results Max results.
 	 * @param string $fields Fields.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function search($jql, $start_at = 0, $max_results = 20, $fields = '*navigable') {
 		$result = $this->api(
@@ -620,7 +620,7 @@ class Api {
 	 * @param string $version Version.
 	 * @param array $options Options.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function createVersion($projectKey, $version, array $options = []) {
 		$options += [
@@ -678,7 +678,7 @@ class Api {
 	 * @param string $filename Filename.
 	 * @param string|null $name Name.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \Jira\Api\Result|false
 	 */
 	public function createAttachment($issueKey, $filename, $name = null) {
 		$options = [
@@ -736,7 +736,7 @@ class Api {
 	 * @param bool $is_file Is file-related request.
 	 * @param bool $debug Debug this request.
 	 *
-	 * @return \chobie\Jira\Api\Result|array|false
+	 * @return \Jira\Api\Result|array|false
 	 */
 	public function api(
 		$method,
@@ -851,7 +851,7 @@ class Api {
 	 * @TODO: Should have parameters? (e.g comment)
 	 * @param string $issueKey Issue key.
 	 *
-	 * @return \chobie\Jira\Api\Result|array
+	 * @return \Jira\Api\Result|array
 	 */
 	public function closeIssue($issueKey) {
 		$result = [];

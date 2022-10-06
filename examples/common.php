@@ -6,9 +6,9 @@ require __DIR__ . '/../vendor/autoload.php';
  */
 function getApiClient()
 {
-	$api = new \chobie\Jira\Api(
+	$api = new \Jira\Api(
 		'https://your-jira-project.net',
-		new \chobie\Jira\Api\Authentication\Basic('yourname', 'password')
+		new \Jira\Api\Authentication\Basic('yourname', 'password')
 	);
 
 	return $api;

@@ -23,38 +23,29 @@
  * THE SOFTWARE.
  */
 
-namespace chobie\Jira\Api\Client;
+namespace Jira\Api\Authentication;
 
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
-
-interface ClientInterface {
+interface AuthenticationInterface {
 
 	/**
-	 * Sends request to the API server.
+	 * Returns credential string.
 	 *
-	 * @param string $method Request method.
-	 * @param string $url URL.
-	 * @param array|string $data Request data.
-	 * @param string $endpoint Endpoint.
-	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $credential Credential.
-	 * @param bool $is_file This is a file upload request.
-	 * @param bool $debug Debug this request.
-	 *
-	 * @throws \InvalidArgumentException When non-supported implementation of AuthenticationInterface is given.
-	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
-	 * @throws \chobie\Jira\Api\Exception When request failed due communication error.
-	 * @throws \chobie\Jira\Api\UnauthorizedException When request failed, because user can't be authorized properly.
-	 * @throws \chobie\Jira\Api\Exception When there was empty response instead of needed data.
-	 * @return array|string
+	 * @return string
 	 */
-	public function sendRequest(
-		$method,
-		$url,
-		$data,
-		$endpoint,
-		AuthenticationInterface $credential,
-		$is_file = false,
-		$debug = false
-	);
+	public function getCredential();
+
+	/**
+	 * Returns user id.
+	 *
+	 * @return string
+	 */
+	public function getId();
+
+	/**
+	 * Returns password.
+	 *
+	 * @return string
+	 */
+	public function getPassword();
 
 }
