@@ -1,6 +1,6 @@
 {
-    "name": "chobie/jira-api-restclient",
-    "description": "JIRA REST API Client",
+    "name": "dereuromark/jira-api-restclient",
+    "description": "Jira REST API Client",
     "keywords": ["jira","rest","api"],
     "type": "library",
     "license": "MIT",
@@ -12,21 +12,20 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=7.4.0"
     },
     "require-dev": {
-        "aik099/coding-standard": "dev-master",
-        "squizlabs/php_codesniffer": "^2.6",
-        "yoast/phpunit-polyfills": "^1.0"
+        "yoast/phpunit-polyfills": "^1.0",
+        "phpstan/phpstan": "^1.0.0"
     },
     "autoload": {
         "psr-4" : {
-            "chobie\\" : "src"
+            "chobie\\" : "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\chobie\\": "tests"
+            "Tests\\chobie\\": "tests/"
         }
     },
     "extra": {
