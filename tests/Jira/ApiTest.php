@@ -3,7 +3,6 @@
 namespace Tests\chobie\Jira;
 
 use chobie\Jira\Api;
-use chobie\Jira\Api\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -99,7 +98,7 @@ class ApiTest extends TestCase {
 			file_get_contents(__DIR__ . '/resources/api_field.json'),
 		);
 
-		$this->assertEquals(new Result($response_decoded), $this->api->search('test', 0, 2, 'description'));
+		$this->assertEquals($response_decoded, $this->api->search('test', 0, 2, 'description'));
 	}
 
 	/**
