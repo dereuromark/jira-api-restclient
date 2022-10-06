@@ -231,6 +231,27 @@ class Api {
 	}
 
 	/**
+	 * Deletes issue.
+	 *
+	 * @param string $issueKey Issue key.
+	 * @param bool $deleteSubtasks If all subtask should be deleted
+	 * @param array $params Params.
+	 *
+	 * @return array
+	 */
+	public function deleteIssue($issueKey, bool $deleteSubtasks = true, array $params = []) {
+		$params = [
+			'deleteSubtasks' => $deleteSubtasks,
+		] + $params;
+
+		return $this->api(
+			static::REQUEST_DELETE,
+			sprintf('/rest/api/2/issue/%s', $issueKey),
+			$params,
+		);
+	}
+
+	/**
 	 * Gets attachments meta information.
 	 *
 	 * @return array
@@ -595,25 +616,22 @@ class Api {
 	/**
 	 * Creates new version.
 	 *
-	 * @param string $project_key Project key.
+	 * @param string $projectKey Project key.
 	 * @param string $version Version.
 	 * @param array $options Options.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function createVersion($project_key, $version, array $options = []) {
-		$options = array_merge(
-			[
-				'name' => $version,
-				'description' => '',
-				'project' => $project_key,
-				// 'userReleaseDate' => '',
-				// 'releaseDate' => '',
-				'released' => false,
-				'archived' => false,
-			],
-			$options,
-		);
+	public function createVersion($projectKey, $version, array $options = []) {
+		$options += [
+			'name' => $version,
+			'description' => '',
+			'project' => $projectKey,
+			// 'userReleaseDate' => '',
+			// 'releaseDate' => '',
+			'released' => false,
+			'archived' => false,
+		];
 
 		return $this->api(static::REQUEST_POST, '/rest/api/2/version', $options);
 	}
@@ -645,13 +663,10 @@ class Api {
 			$release_date = date('Y-m-d');
 		}
 
-		$params = array_merge(
-			[
-				'releaseDate' => $release_date,
-				'released' => true,
-			],
-			$params,
-		);
+		$params = [
+			'releaseDate' => $release_date,
+			'released' => true,
+		] + $params;
 
 		return $this->updateVersion($version_id, $params);
 	}
