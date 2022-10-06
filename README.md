@@ -1,11 +1,10 @@
 # Jira REST API Client
 
-[![CI](https://github.com/dereuromark/jira-api-restclient/actions/workflows/tests.yml/badge.svg)](https://github.com/dereuromark/jira-api-restclient/actions/workflows/tests.yml)
+[![CI](https://github.com/dereuromark/jira-api-restclient/actions/workflows/ci.yml/badge.svg)](https://github.com/dereuromark/jira-api-restclient/actions/workflows/ci.yml)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%206-brightgreen.svg?style=flat)](https://phpstan.org/)
 [![Latest Stable Version](https://poser.pugx.org/dereuromark/jira-api-restclient/v/stable.svg)](https://packagist.org/packages/dereuromark/jira-api-restclient)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg)](https://php.net/)
 [![License](https://poser.pugx.org/dereuromark/jira-api-restclient/license.png)](https://packagist.org/packages/dereuromark/jira-api-restclient)
-[![Total Downloads](https://poser.pugx.org/dereuromark/jira-api-restclient/d/total.svg)](https://packagist.org/packages/dereuromark/jira-api-restclient)
 
 You all know that Jira supports REST API, right? It can be very useful, for example, during automation job creation and notification sending.
 
