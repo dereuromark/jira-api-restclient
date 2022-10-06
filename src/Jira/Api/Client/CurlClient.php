@@ -30,6 +30,7 @@ use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
 use chobie\Jira\Api\Exception;
 use chobie\Jira\Api\UnauthorizedException;
+use InvalidArgumentException;
 
 class CurlClient implements ClientInterface {
 

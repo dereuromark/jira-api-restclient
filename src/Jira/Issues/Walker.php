@@ -26,6 +26,7 @@
 namespace chobie\Jira\Issues;
 
 use chobie\Jira\Api;
+use chobie\Jira\Api\Result;
 use Exception;
 
 class Walker implements \Iterator, \Countable {
@@ -298,11 +299,11 @@ class Walker implements \Iterator, \Countable {
 	/**
 	 * Sets result.
 	 *
-	 * @param Api\Result $result Result.
+	 * @param \chobie\Jira\Api\Result $result Result.
 	 *
 	 * @return void
 	 */
-	protected function setResult(ApiResult $result) {
+	protected function setResult(Result $result) {
 		$this->total = $result->getTotal();
 		$this->offset = 0;
 		$this->max = $result->getIssuesCount();
