@@ -3,6 +3,7 @@
 namespace Tests\Jira\Issues;
 
 use Exception;
+use Jira\Api;
 use Jira\Api\Result;
 use Jira\Api\UnauthorizedException;
 use Jira\Issue;
@@ -34,7 +35,7 @@ class WalkerTest extends TestCase {
 	 * @return void
 	 */
 	protected function setUpTest() {
-		$this->api = $this->prophesize('chobie\Jira\Api');
+		$this->api = $this->prophesize(Api::class);
 
 		if ($this->captureErrorLog()) {
 			$this->errorLogFile = tempnam(sys_get_temp_dir(), 'error_log_');
@@ -68,7 +69,7 @@ class WalkerTest extends TestCase {
 	 * @return void
 	 */
 	public function testErrorWithoutJQL() {
-		$this->expectException('\Exception');
+		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('you have to call Jira_Walker::push($jql, $fields) at first');
 
 		foreach ($this->createWalker() as $issue) {

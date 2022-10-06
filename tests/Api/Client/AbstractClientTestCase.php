@@ -165,7 +165,7 @@ abstract class AbstractClientTestCase extends TestCase {
 	 */
 	public function testUnsupportedCredentialGiven() {
 		$client_class_parts = explode('\\', get_class($this->client));
-		$credential = $this->prophesize('chobie\Jira\Api\Authentication\AuthenticationInterface')->reveal();
+		$credential = $this->prophesize(AuthenticationInterface::class)->reveal();
 
 		if (\method_exists($this, 'setExpectedException')) {
 			$this->setExpectedException(

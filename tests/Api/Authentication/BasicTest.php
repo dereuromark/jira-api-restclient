@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\chobie\Jira;
+namespace Tests\Jira;
 
 use Jira\Api\Authentication\Basic;
 use PHPUnit\Framework\TestCase;
