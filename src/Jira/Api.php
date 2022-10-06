@@ -114,7 +114,7 @@ class Api {
 	protected $resolutions;
 
 	/**
-	 * Create a JIRA API client.
+	 * Create a Jira API client.
 	 *
 	 * @param string $endpoint Endpoint URL.
 	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $authentication Authentication.
@@ -209,31 +209,30 @@ class Api {
 	/**
 	 * Get specified issue.
 	 *
-	 * @param string $issue_key Issue key should be "YOURPROJ-221".
+	 * @param string $issueKey Issue key should be "YOURPROJ-221".
 	 * @param string $expand Expand.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function getIssue($issue_key, $expand = '') {
-		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s', $issue_key), ['expand' => $expand]);
+	public function getIssue($issueKey, $expand = '') {
+		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s', $issueKey), ['expand' => $expand]);
 	}
 
 	/**
 	 * Edits the issue.
 	 *
-	 * @param string $issue_key Issue key.
+	 * @param string $issueKey Issue key.
 	 * @param array $params Params.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function editIssue($issue_key, array $params) {
-		return $this->api(static::REQUEST_PUT, sprintf('/rest/api/2/issue/%s', $issue_key), $params);
+	public function editIssue($issueKey, array $params = []) {
+		return $this->api(static::REQUEST_PUT, sprintf('/rest/api/2/issue/%s', $issueKey), $params);
 	}
 
 	/**
 	 * Gets attachments meta information.
 	 *
-	 * @since 2.0.0
 	 * @return array
 	 */
 	public function getAttachmentsMetaInformation() {
@@ -361,12 +360,12 @@ class Api {
 	/**
 	 * Add a comment to a ticket.
 	 *
-	 * @param string $issue_key Issue key should be "YOURPROJ-221".
+	 * @param string $issueKey Issue key should be "YOURPROJ-221".
 	 * @param array|string $params Params.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function addComment($issue_key, $params) {
+	public function addComment($issueKey, $params) {
 		if (is_string($params)) {
 			// If $params is scalar string value -> wrapping it properly.
 			$params = [
@@ -374,44 +373,75 @@ class Api {
 			];
 		}
 
-		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/comment', $issue_key), $params);
+		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/comment', $issueKey), $params);
 	}
 
 	/**
-	 * Get all worklogs for an issue.
+	 * Gets all worklogs for an issue.
 	 *
-	 * @since 2.0.0
-	 * @param string $issue_key Issue key should be "YOURPROJ-22".
+	 * @param string $issueKey Issue key should be "YOURPROJ-22".
 	 * @param array $params Params.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function getWorklogs($issue_key, array $params) {
-		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s/worklog', $issue_key), $params);
+	public function getWorklogs($issueKey, array $params = []) {
+		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s/worklog', $issueKey), $params);
+	}
+
+	/**
+	 * Creates Jira Worklog
+	 *
+	 * @param string $issueKey
+	 * @param string $time
+	 * @param array $params
+	 * @return array
+	 */
+	public function createWorklog($issueKey, $time, array $params = []) {
+		$params = [
+			'timeSpent' => $time,
+		] + $params;
+
+		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/worklog', $issueKey), $params);
+	}
+
+	/**
+	 * Removes a Jira Worklog
+	 *
+	 * @param string $issueKey
+	 * @param string $worklogId
+	 * @param array $params
+	 * @return array
+	 */
+	public function removeWorklog($issueKey, $worklogId, array $params = []) {
+		$params = [
+			'adjustEstimate' => 'auto',
+		] + $params;
+
+		return $this->api(static::REQUEST_DELETE, sprintf('/rest/api/2/issue/%s/worklog/%s', $issueKey, $worklogId), $params);
 	}
 
 	/**
 	 * Get available transitions for a ticket.
 	 *
-	 * @param string $issue_key Issue key should be "YOURPROJ-22".
+	 * @param string $issueKey Issue key should be "YOURPROJ-22".
 	 * @param array $params Params.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function getTransitions($issue_key, array $params) {
-		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s/transitions', $issue_key), $params);
+	public function getTransitions($issueKey, array $params = []) {
+		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s/transitions', $issueKey), $params);
 	}
 
 	/**
 	 * Transition a ticket.
 	 *
-	 * @param string $issue_key Issue key should be "YOURPROJ-22".
+	 * @param string $issueKey Issue key should be "YOURPROJ-22".
 	 * @param array $params Params.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function transition($issue_key, array $params) {
-		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/transitions', $issue_key), $params);
+	public function transition($issueKey, array $params = []) {
+		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/transitions', $issueKey), $params);
 	}
 
 	/**
@@ -423,8 +453,8 @@ class Api {
 		$result = [];
 		$types = $this->api(static::REQUEST_GET, '/rest/api/2/issuetype', [], true);
 
-		foreach ($types as $issue_type) {
-			$result[] = new IssueType($issue_type);
+		foreach ($types as $type) {
+			$result[] = new IssueType($type);
 		}
 
 		return $result;
@@ -444,7 +474,6 @@ class Api {
 	/**
 	 * Helper method to find a specific version based on the name of the version.
 	 *
-	 * @since 2.0.0
 	 * @param string $project_key Project Key.
 	 * @param string $name The version name to match on.
 	 *
@@ -471,7 +500,6 @@ class Api {
 	/**
 	 * Get available priorities.
 	 *
-	 * @since 2.0.0
 	 * @return array
 	 */
 	public function getPriorities() {
@@ -593,7 +621,6 @@ class Api {
 	/**
 	 * Updates version.
 	 *
-	 * @since 2.0.0
 	 * @link https://docs.atlassian.com/jira/REST/latest/#api/2/version-updateVersion
 	 * @param int $version_id Version ID.
 	 * @param array $params Key->Value list to update the version with.
@@ -607,7 +634,6 @@ class Api {
 	/**
 	 * Shorthand to mark a version as Released.
 	 *
-	 * @since 2.0.0
 	 * @param int $version_id Version ID.
 	 * @param string|null $release_date Date in Y-m-d format (defaults to today).
 	 * @param array $params Optionally extra parameters.
@@ -633,13 +659,13 @@ class Api {
 	/**
 	 * Create attachment.
 	 *
-	 * @param string $issue_key Issue key.
+	 * @param string $issueKey Issue key.
 	 * @param string $filename Filename.
 	 * @param string|null $name Name.
 	 *
 	 * @return \chobie\Jira\Api\Result|false
 	 */
-	public function createAttachment($issue_key, $filename, $name = null) {
+	public function createAttachment($issueKey, $filename, $name = null) {
 		$options = [
 			'file' => '@' . $filename,
 			'name' => $name,
@@ -647,7 +673,7 @@ class Api {
 
 		return $this->api(
 			static::REQUEST_POST,
-			sprintf('/rest/api/2/issue/%s/attachments', $issue_key),
+			sprintf('/rest/api/2/issue/%s/attachments', $issueKey),
 			$options,
 			false,
 			true,
@@ -657,8 +683,7 @@ class Api {
 	/**
 	 * Creates a remote link.
 	 *
-	 * @since 2.0.0
-	 * @param string $issue_key Issue key.
+	 * @param string $issueKey Issue key.
 	 * @param array $object Object.
 	 * @param string|null $relationship Relationship.
 	 * @param string|null $global_id Global ID.
@@ -667,7 +692,7 @@ class Api {
 	 * @return array|false
 	 */
 	public function createRemoteLink(
-		$issue_key,
+		$issueKey,
 		array $object = [],
 		$relationship = null,
 		$global_id = null,
@@ -683,7 +708,7 @@ class Api {
 			$options['application'] = $application;
 		}
 
-		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/remotelink', $issue_key), $options, true);
+		return $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/remotelink', $issueKey), $options, true);
 	}
 
 	/**
@@ -790,16 +815,16 @@ class Api {
 	/**
 	 * Set issue watchers.
 	 *
-	 * @param string $issue_key Issue key.
+	 * @param string $issueKey Issue key.
 	 * @param array $watchers Watchers.
 	 *
 	 * @return array<Result|false>
 	 */
-	public function setWatchers($issue_key, array $watchers) {
+	public function setWatchers($issueKey, array $watchers) {
 		$result = [];
 
 		foreach ($watchers as $watcher) {
-			$result[] = $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/watchers', $issue_key), $watcher);
+			$result[] = $this->api(static::REQUEST_POST, sprintf('/rest/api/2/issue/%s/watchers', $issueKey), $watcher);
 		}
 
 		return $result;
@@ -809,15 +834,15 @@ class Api {
 	 * Closes issue.
 	 *
 	 * @TODO: Should have parameters? (e.g comment)
-	 * @param string $issue_key Issue key.
+	 * @param string $issueKey Issue key.
 	 *
 	 * @return \chobie\Jira\Api\Result|array
 	 */
-	public function closeIssue($issue_key) {
+	public function closeIssue($issueKey) {
 		$result = [];
 
 		// Get available transitions.
-		$tmp_transitions = $this->getTransitions($issue_key, []);
+		$tmp_transitions = $this->getTransitions($issueKey, []);
 		$tmp_transitions_result = $tmp_transitions->getResult();
 		$transitions = $tmp_transitions_result['transitions'];
 
@@ -826,7 +851,7 @@ class Api {
 			// Close issue if required id was found.
 			if ($v['name'] == 'Close Issue') {
 				$result = $this->transition(
-					$issue_key,
+					$issueKey,
 					[
 						'transition' => ['id' => $v['id']],
 					],
@@ -842,7 +867,6 @@ class Api {
 	/**
 	 * Returns project components.
 	 *
-	 * @since 2.0.0
 	 * @param string $project_key Project key.
 	 *
 	 * @return array
@@ -854,7 +878,6 @@ class Api {
 	/**
 	 * Get all issue types with valid status values for a project.
 	 *
-	 * @since 2.0.0
 	 * @param string $project_key Project key.
 	 *
 	 * @return array
@@ -866,7 +889,6 @@ class Api {
 	/**
 	 * Returns a list of all resolutions.
 	 *
-	 * @since 2.0.0
 	 * @return array
 	 */
 	public function getResolutions() {
