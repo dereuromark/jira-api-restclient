@@ -212,7 +212,7 @@ class Api {
 	 * @param string $issueKey Issue key should be "YOURPROJ-221".
 	 * @param string $expand Expand.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \chobie\Jira\Api\Result|array|false
 	 */
 	public function getIssue($issueKey, $expand = '') {
 		return $this->api(static::REQUEST_GET, sprintf('/rest/api/2/issue/%s', $issueKey), ['expand' => $expand]);
@@ -224,7 +224,7 @@ class Api {
 	 * @param string $issueKey Issue key.
 	 * @param array $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \chobie\Jira\Api\Result|array|false
 	 */
 	public function editIssue($issueKey, array $params = []) {
 		return $this->api(static::REQUEST_PUT, sprintf('/rest/api/2/issue/%s', $issueKey), $params);
@@ -237,7 +237,7 @@ class Api {
 	 * @param bool $deleteSubtasks If all subtask should be deleted
 	 * @param array $params Params.
 	 *
-	 * @return array
+	 * @return \chobie\Jira\Api\Result|array|false
 	 */
 	public function deleteIssue($issueKey, bool $deleteSubtasks = true, array $params = []) {
 		$params = [
@@ -384,7 +384,7 @@ class Api {
 	 * @param string $issueKey Issue key should be "YOURPROJ-221".
 	 * @param array|string $params Params.
 	 *
-	 * @return \chobie\Jira\Api\Result|false
+	 * @return \chobie\Jira\Api\Result|array|false
 	 */
 	public function addComment($issueKey, $params) {
 		if (is_string($params)) {
@@ -415,7 +415,7 @@ class Api {
 	 * @param string $issueKey
 	 * @param string $time
 	 * @param array $params
-	 * @return array
+	 * @return \chobie\Jira\Api\Result|array|false
 	 */
 	public function createWorklog($issueKey, $time, array $params = []) {
 		$params = [
@@ -431,7 +431,7 @@ class Api {
 	 * @param string $issueKey
 	 * @param string $worklogId
 	 * @param array $params
-	 * @return array
+	 * @return \chobie\Jira\Api\Result|array|false
 	 */
 	public function removeWorklog($issueKey, $worklogId, array $params = []) {
 		$params = [
@@ -756,29 +756,29 @@ class Api {
 			$debug,
 		);
 
-		if (strlen($result)) {
-			$json = json_decode($result, true);
-
-			if ($this->options & static::AUTOMAP_FIELDS) {
-				if (isset($json['issues'])) {
-					if ($this->fields === null) {
-						$this->getFields();
-					}
-
-					foreach ($json['issues'] as $offset => $issue) {
-						$json['issues'][$offset] = $this->automapFields($issue);
-					}
-				}
-			}
-
-			if ($return_as_array) {
-				return $json;
-			}
-
-			return new Result($json);
+		if (!strlen($result)) {
+			return false;
 		}
 
-			return false;
+		$json = json_decode($result, true);
+
+		if ($this->options & static::AUTOMAP_FIELDS) {
+			if (isset($json['issues'])) {
+				if ($this->fields === null) {
+					$this->getFields();
+				}
+
+				foreach ($json['issues'] as $offset => $issue) {
+					$json['issues'][$offset] = $this->automapFields($issue);
+				}
+			}
+		}
+
+		if ($return_as_array) {
+			return $json;
+		}
+
+		return new Result($json);
 	}
 
 	/**
