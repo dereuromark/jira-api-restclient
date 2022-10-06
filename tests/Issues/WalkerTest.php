@@ -18,7 +18,7 @@ class WalkerTest extends TestCase {
 	/**
 	 * API.
 	 *
-	 * @var \Prophecy\Prophecy\ObjectProphecy
+	 * @var \Prophecy\Prophecy\ObjectProphecy|\Jira\Api
 	 */
 	protected $api;
 
