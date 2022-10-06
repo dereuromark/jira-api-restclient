@@ -2,25 +2,23 @@
 
 namespace Tests\chobie\Jira\Issues;
 
-
 use chobie\Jira\Api\Result;
 use chobie\Jira\Api\UnauthorizedException;
 use chobie\Jira\Issue;
 use chobie\Jira\Issues\Walker;
+use Exception;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 use Yoast\PHPUnitPolyfills\Polyfills\AssertStringContains;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectException;
 
-class WalkerTest extends TestCase
-{
+class WalkerTest extends TestCase {
 
 	use ExpectException, AssertStringContains;
 
 	/**
 	 * API.
 	 *
-	 * @var ObjectProphecy
+	 * @var \Prophecy\Prophecy\ObjectProphecy
 	 */
 	protected $api;
 
@@ -33,12 +31,12 @@ class WalkerTest extends TestCase
 
 	/**
 	 * @before
+	 * @return void
 	 */
-	protected function setUpTest()
-	{
+	protected function setUpTest() {
 		$this->api = $this->prophesize('chobie\Jira\Api');
 
-		if ( $this->captureErrorLog() ) {
+		if ($this->captureErrorLog()) {
 			$this->errorLogFile = tempnam(sys_get_temp_dir(), 'error_log_');
 			$this->assertEmpty(file_get_contents($this->errorLogFile));
 
@@ -48,10 +46,10 @@ class WalkerTest extends TestCase
 
 	/**
 	 * @after
+	 * @return void
 	 */
-	protected function tearDownTest()
-	{
-		if ( $this->captureErrorLog() ) {
+	protected function tearDownTest() {
+		if ($this->captureErrorLog()) {
 			ini_restore('error_log');
 			unlink($this->errorLogFile);
 		}
@@ -60,62 +58,69 @@ class WalkerTest extends TestCase
 	/**
 	 * Determines if contents of error log needs to be captured.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
-	protected function captureErrorLog()
-	{
+	protected function captureErrorLog() {
 		return strpos($this->getName(false), 'AnyException') !== false;
 	}
 
-	public function testErrorWithoutJQL()
-	{
+	/**
+	 * @return void
+	 */
+	public function testErrorWithoutJQL() {
 		$this->expectException('\Exception');
 		$this->expectExceptionMessage('you have to call Jira_Walker::push($jql, $fields) at first');
 
-		foreach ( $this->createWalker() as $issue ) {
+		foreach ($this->createWalker() as $issue) {
 			echo '';
 		}
 	}
 
-	public function testFoundNoIssues()
-	{
+	/**
+	 * @return void
+	 */
+	public function testFoundNoIssues() {
 		$search_response = $this->generateSearchResponse('PRJ', 0);
 		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response);
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
 
-		$found_issues = array();
+		$found_issues = [];
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			$found_issues[] = $issue;
 		}
 
 		$this->assertCount(0, $found_issues);
 	}
 
-	public function testDefaultPerPageUsed()
-	{
+	/**
+	 * @return void
+	 */
+	public function testDefaultPerPageUsed() {
 		$search_response = $this->generateSearchResponse('PRJ', 50);
 		$this->api->search('test jql', 0, 50, 'description')->willReturn($search_response);
 
 		$walker = $this->createWalker();
 		$walker->push('test jql', 'description');
 
-		$found_issues = array();
+		$found_issues = [];
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			$found_issues[] = $issue;
 		}
 
 		$this->assertEquals(
 			$search_response->getIssues(),
-			$found_issues
+			$found_issues,
 		);
 	}
 
-	public function testFoundTwoPagesOfIssues()
-	{
+	/**
+	 * @return void
+	 */
+	public function testFoundTwoPagesOfIssues() {
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
 		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
@@ -127,20 +132,22 @@ class WalkerTest extends TestCase
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
 
-		$found_issues = array();
+		$found_issues = [];
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			$found_issues[] = $issue;
 		}
 
 		$this->assertEquals(
 			array_merge($search_response1->getIssues(), $search_response2->getIssues()),
-			$found_issues
+			$found_issues,
 		);
 	}
 
-	public function testUnauthorizedExceptionOnFirstPage()
-	{
+	/**
+	 * @return void
+	 */
+	public function testUnauthorizedExceptionOnFirstPage() {
 		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
 		$this->expectExceptionMessage('Unauthorized');
 
@@ -149,27 +156,31 @@ class WalkerTest extends TestCase
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			echo '';
 		}
 	}
 
-	public function testAnyExceptionOnFirstPage()
-	{
-		$this->api->search('test jql', 0, 5, 'description')->willThrow(new \Exception('Anything'));
+	/**
+	 * @return void
+	 */
+	public function testAnyExceptionOnFirstPage() {
+		$this->api->search('test jql', 0, 5, 'description')->willThrow(new Exception('Anything'));
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			echo '';
 		}
 
 		$this->assertStringContainsString('Anything', file_get_contents($this->errorLogFile));
 	}
 
-	public function testUnauthorizedExceptionOnSecondPage()
-	{
+	/**
+	 * @return void
+	 */
+	public function testUnauthorizedExceptionOnSecondPage() {
 		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
 		$this->expectExceptionMessage('Unauthorized');
 
@@ -183,32 +194,36 @@ class WalkerTest extends TestCase
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			echo '';
 		}
 	}
 
-	public function testAnyExceptionOnSecondPage()
-	{
+	/**
+	 * @return void
+	 */
+	public function testAnyExceptionOnSecondPage() {
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
 		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
 
 		// Incomplete 2nd page.
-		$this->api->search('test jql', 5, 5, 'description')->willThrow(new \Exception('Anything'));
+		$this->api->search('test jql', 5, 5, 'description')->willThrow(new Exception('Anything'));
 
 		$walker = $this->createWalker(5);
 		$walker->push('test jql', 'description');
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			echo '';
 		}
 
 		$this->assertStringContainsString('Anything', file_get_contents($this->errorLogFile));
 	}
 
-	public function testSetDelegateError()
-	{
+	/**
+	 * @return void
+	 */
+	public function testSetDelegateError() {
 		$this->expectException('\Exception');
 		$this->expectExceptionMessage('passed argument is not callable');
 
@@ -216,8 +231,10 @@ class WalkerTest extends TestCase
 		$walker->setDelegate('not a callable');
 	}
 
-	public function testIssuesPassedThroughDelegate()
-	{
+	/**
+	 * @return void
+	 */
+	public function testIssuesPassedThroughDelegate() {
 		$search_response = $this->generateSearchResponse('PRJ', 2);
 		$this->api->search('test jql', 0, 2, 'description')->willReturn($search_response);
 
@@ -227,20 +244,22 @@ class WalkerTest extends TestCase
 			return $issue->get('description');
 		});
 
-		$found_issues = array();
+		$found_issues = [];
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			$found_issues[] = $issue;
 		}
 
 		$this->assertEquals(
-			array('description 2', 'description 1'),
-			$found_issues
+			['description 2', 'description 1'],
+			$found_issues,
 		);
 	}
 
-	public function testCounting()
-	{
+	/**
+	 * @return void
+	 */
+	public function testCounting() {
 		// Full 1st page.
 		$search_response1 = $this->generateSearchResponse('PRJ1', 5, 7);
 		$this->api->search('test jql', 0, 5, 'description')->willReturn($search_response1);
@@ -254,69 +273,66 @@ class WalkerTest extends TestCase
 
 		$this->assertEquals(7, count($walker));
 
-		$found_issues = array();
+		$found_issues = [];
 
-		foreach ( $walker as $issue ) {
+		foreach ($walker as $issue) {
 			$found_issues[] = $issue;
 		}
 
 		$this->assertEquals(
 			array_merge($search_response1->getIssues(), $search_response2->getIssues()),
-			$found_issues
+			$found_issues,
 		);
 	}
 
 	/**
 	 * Generate search response.
 	 *
-	 * @param string       $project_key Project key.
-	 * @param integer      $issue_count Issue count.
-	 * @param integer|null $total       Total issues.
+	 * @param string $project_key Project key.
+	 * @param int $issue_count Issue count.
+	 * @param int|null $total Total issues.
 	 *
-	 * @return Result
+	 * @return \chobie\Jira\Api\Result
 	 */
-	protected function generateSearchResponse($project_key, $issue_count, $total = null)
-	{
-		$issues = array();
+	protected function generateSearchResponse($project_key, $issue_count, $total = null) {
+		$issues = [];
 
-		if ( !is_numeric($total) ) {
+		if (!is_numeric($total)) {
 			$total = $issue_count;
 		}
 
-		while ( $issue_count > 0 ) {
+		while ($issue_count > 0) {
 			$issue_id = $issue_count + 1000;
-			$issues[] = array(
+			$issues[] = [
 				'expand' => 'operations,versionedRepresentations,editmeta,changelog,transitions,renderedFields',
 				'id' => $issue_id,
 				'self' => 'http://jira.company.com/rest/api/2/issue/' . $issue_id,
 				'key' => $project_key . '-' . $issue_id,
-				'fields' => array(
+				'fields' => [
 					'description' => 'description ' . $issue_count,
-				),
-			);
+				],
+			];
 			$issue_count--;
 		}
 
-		return new Result(array(
+		return new Result([
 			'expand' => 'schema,names',
 			'startAt' => 0,
 			'maxResults' => count($issues),
 			'total' => $total,
 			'issues' => $issues,
-		));
+		]);
 	}
 
 	/**
 	 * Creates walker instance.
 	 *
-	 * @param integer|null $per_page Per page.
+	 * @param int|null $per_page Per page.
 	 *
-	 * @return Walker
+	 * @return \chobie\Jira\Issues\Walker
 	 */
-	protected function createWalker($per_page = null)
-	{
+	protected function createWalker($per_page = null) {
 		return new Walker($this->api->reveal(), $per_page);
 	}
 
 }
-

@@ -22,33 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace chobie\Jira\Api\Client;
 
-
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
-use chobie\Jira\Api\Exception;
-use chobie\Jira\Api\UnauthorizedException;
 
-interface ClientInterface
-{
+interface ClientInterface {
 
 	/**
 	 * Sends request to the API server.
 	 *
-	 * @param string                  $method     Request method.
-	 * @param string                  $url        URL.
-	 * @param array|string            $data       Request data.
-	 * @param string                  $endpoint   Endpoint.
-	 * @param AuthenticationInterface $credential Credential.
-	 * @param boolean                 $is_file    This is a file upload request.
-	 * @param boolean                 $debug      Debug this request.
+	 * @param string $method Request method.
+	 * @param string $url URL.
+	 * @param array|string $data Request data.
+	 * @param string $endpoint Endpoint.
+	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $credential Credential.
+	 * @param bool $is_file This is a file upload request.
+	 * @param bool $debug Debug this request.
 	 *
-	 * @return array|string
 	 * @throws \InvalidArgumentException When non-supported implementation of AuthenticationInterface is given.
 	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
-	 * @throws Exception When request failed due communication error.
-	 * @throws UnauthorizedException When request failed, because user can't be authorized properly.
-	 * @throws Exception When there was empty response instead of needed data.
+	 * @throws \chobie\Jira\Api\Exception When request failed due communication error.
+	 * @throws \chobie\Jira\Api\UnauthorizedException When request failed, because user can't be authorized properly.
+	 * @throws \chobie\Jira\Api\Exception When there was empty response instead of needed data.
+	 * @return array|string
 	 */
 	public function sendRequest(
 		$method,

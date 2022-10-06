@@ -22,11 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace chobie\Jira;
 
+use Exception;
 
-class IssueType
-{
+class IssueType {
 
 	/**
 	 * Self.
@@ -82,7 +83,7 @@ class IssueType
 	 *
 	 * @var array
 	 */
-	private $_acceptableKeys = array(
+	private $_acceptableKeys = [
 		'self',
 		'id',
 		'description',
@@ -91,24 +92,22 @@ class IssueType
 		'subtask',
 		'avatarId',
 		'scope',
-	);
+	];
 
 	/**
 	 * Creates issue instance.
 	 *
-	 * @param array $types Types.
+	 * @param array<string, mixed> $types Types.
 	 *
 	 * @throws \Exception When unknown type is given.
 	 */
-	public function __construct(array $types)
-	{
-		foreach ( $types as $key => $value ) {
-			if ( in_array($key, $this->_acceptableKeys) ) {
-				$this->$key = $value;
+	public function __construct(array $types) {
+		foreach ($types as $key => $value) {
+			if (!in_array($key, $this->_acceptableKeys, true)) {
+				throw new Exception('The key `' . $key . '` is not supported');
 			}
-			else {
-				throw new \Exception('the key ' . $key . ' does not support');
-			}
+
+			$this->$key = $value;
 		}
 	}
 
@@ -117,8 +116,7 @@ class IssueType
 	 *
 	 * @return string
 	 */
-	public function getName()
-	{
+	public function getName() {
 		return $this->name;
 	}
 
@@ -127,8 +125,7 @@ class IssueType
 	 *
 	 * @return string
 	 */
-	public function isSubtask()
-	{
+	public function isSubtask() {
 		return $this->subtask;
 	}
 
@@ -137,8 +134,7 @@ class IssueType
 	 *
 	 * @return string
 	 */
-	public function getId()
-	{
+	public function getId() {
 		return $this->id;
 	}
 
@@ -147,8 +143,7 @@ class IssueType
 	 *
 	 * @return string
 	 */
-	public function getDescription()
-	{
+	public function getDescription() {
 		return $this->description;
 	}
 
@@ -157,8 +152,7 @@ class IssueType
 	 *
 	 * @return string
 	 */
-	public function getIconUrl()
-	{
+	public function getIconUrl() {
 		return $this->iconUrl;
 	}
 
@@ -167,8 +161,7 @@ class IssueType
 	 *
 	 * @return string
 	 */
-	public function getAvatarId()
-	{
+	public function getAvatarId() {
 		return $this->avatarId;
 	}
 

@@ -22,11 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace chobie\Jira;
 
-
-class Issue
-{
+class Issue {
 
 	/**
 	 * Expand.
@@ -75,29 +74,28 @@ class Issue
 	 *
 	 * @param array $issue Issue.
 	 */
-	public function __construct(array $issue = array())
-	{
-		if ( isset($issue['expand']) ) {
+	public function __construct(array $issue = []) {
+		if (isset($issue['expand'])) {
 			$this->expand = explode(',', $issue['expand']);
 			unset($issue['expand']);
 		}
 
-		if ( isset($issue['id']) ) {
+		if (isset($issue['id'])) {
 			$this->id = $issue['id'];
 			unset($issue['id']);
 		}
 
-		if ( isset($issue['self']) ) {
+		if (isset($issue['self'])) {
 			$this->self = $issue['self'];
 			unset($issue['self']);
 		}
 
-		if ( isset($issue['key']) ) {
+		if (isset($issue['key'])) {
 			$this->key = $issue['key'];
 			unset($issue['key']);
 		}
 
-		if ( isset($issue['fields']) ) {
+		if (isset($issue['fields'])) {
 			$this->fields = $issue['fields'];
 			unset($issue['fields']);
 		}
@@ -110,8 +108,7 @@ class Issue
 	 *
 	 * @return string
 	 */
-	public function getKey()
-	{
+	public function getKey() {
 		return $this->key;
 	}
 
@@ -120,8 +117,7 @@ class Issue
 	 *
 	 * @return string
 	 */
-	public function getId()
-	{
+	public function getId() {
 		return $this->id;
 	}
 
@@ -130,8 +126,7 @@ class Issue
 	 *
 	 * @return string
 	 */
-	public function getSelf()
-	{
+	public function getSelf() {
 		return $this->self;
 	}
 
@@ -140,8 +135,7 @@ class Issue
 	 *
 	 * @return array
 	 */
-	public function getFields()
-	{
+	public function getFields() {
 		return $this->fields;
 	}
 
@@ -150,8 +144,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getSummary()
-	{
+	public function getSummary() {
 		return $this->get('Summary');
 	}
 
@@ -160,8 +153,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getIssueType()
-	{
+	public function getIssueType() {
 		return $this->get('Issue Type');
 	}
 
@@ -170,8 +162,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getReporter()
-	{
+	public function getReporter() {
 		return $this->get('Reporter');
 	}
 
@@ -180,8 +171,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getCreated()
-	{
+	public function getCreated() {
 		return $this->get('Created');
 	}
 
@@ -190,8 +180,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getAssignee()
-	{
+	public function getAssignee() {
 		return $this->get('Assignee');
 	}
 
@@ -200,8 +189,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getUpdated()
-	{
+	public function getUpdated() {
 		return $this->get('Updated');
 	}
 
@@ -210,8 +198,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getPriority()
-	{
+	public function getPriority() {
 		return $this->get('Priority');
 	}
 
@@ -220,8 +207,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getDescription()
-	{
+	public function getDescription() {
 		return $this->get('Description');
 	}
 
@@ -230,8 +216,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getStatus()
-	{
+	public function getStatus() {
 		return $this->get('Status');
 	}
 
@@ -240,8 +225,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getLabels()
-	{
+	public function getLabels() {
 		return $this->get('Labels');
 	}
 
@@ -250,8 +234,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getProject()
-	{
+	public function getProject() {
 		return $this->get('Project');
 	}
 
@@ -260,8 +243,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getFixVersions()
-	{
+	public function getFixVersions() {
 		return $this->get('Fix Version/s');
 	}
 
@@ -270,19 +252,17 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getResolution()
-	{
+	public function getResolution() {
 		return $this->get('Resolution');
 	}
 
 	/**
 	 * Get resolution date.
 	 *
+	 * @todo Is the field exists? Maybe there should be 'Planned End'?
 	 * @return mixed
-	 * @todo   Is the field exists? Maybe there should be 'Planned End'?
 	 */
-	public function getResolutionDate()
-	{
+	public function getResolutionDate() {
 		return $this->get('Resolutiondate');
 	}
 
@@ -291,8 +271,7 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getWatchers()
-	{
+	public function getWatchers() {
 		return $this->get('Watchers');
 	}
 
@@ -301,19 +280,17 @@ class Issue
 	 *
 	 * @return mixed
 	 */
-	public function getDueDate()
-	{
+	public function getDueDate() {
 		return $this->get('Due Date');
 	}
 
 	/**
 	 * Get information represented in call output due to expand=... suffix.
 	 *
+	 * @see https://docs.atlassian.com/jira/REST/latest/
 	 * @return array
-	 * @see    https://docs.atlassian.com/jira/REST/latest/
 	 */
-	public function getExpandedInformation()
-	{
+	public function getExpandedInformation() {
 		return $this->expandedInformation;
 	}
 
@@ -324,9 +301,8 @@ class Issue
 	 *
 	 * @return array|null
 	 */
-	public function get($field_key)
-	{
-		if ( isset($this->fields[$field_key]) ) {
+	public function get($field_key) {
+		if (isset($this->fields[$field_key])) {
 			return $this->fields[$field_key];
 		}
 

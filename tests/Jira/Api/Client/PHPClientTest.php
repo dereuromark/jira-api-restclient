@@ -2,20 +2,16 @@
 
 namespace Tests\chobie\Jira\Api\Client;
 
-
-use chobie\Jira\Api\Client\ClientInterface;
 use chobie\Jira\Api\Client\PHPClient;
 
-class PHPClientTest extends AbstractClientTestCase
-{
+class PHPClientTest extends AbstractClientTestCase {
 
 	/**
 	 * Creates client.
 	 *
-	 * @return ClientInterface
+	 * @return \chobie\Jira\Api\Client\ClientInterface
 	 */
-	protected function createClient()
-	{
+	protected function createClient() {
 		return new PHPClient();
 	}
 

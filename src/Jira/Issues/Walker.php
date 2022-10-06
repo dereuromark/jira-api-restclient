@@ -22,18 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace chobie\Jira\Issues;
 
-
 use chobie\Jira\Api;
+use Exception;
 
-class Walker implements \Iterator, \Countable
-{
+class Walker implements \Iterator, \Countable {
 
 	/**
 	 * API.
 	 *
-	 * @var Api
+	 * @var \chobie\Jira\Api
 	 */
 	protected $api;
 
@@ -42,54 +42,54 @@ class Walker implements \Iterator, \Countable
 	 *
 	 * @var string|null
 	 */
-	protected $jql = null;
+	protected $jql;
 
 	/**
 	 * Offset.
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $offset = 0;
 
 	/**
 	 * Current record index.
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $current = 0;
 
 	/**
 	 * Total issue count.
 	 *
-	 * @var integer|null
+	 * @var int|null
 	 */
-	protected $total = null;
+	protected $total;
 
 	/**
 	 * Issue count on current page.
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $max = 0;
 
 	/**
 	 * Index of issue in issue list (across all issue pages).
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $startAt = 0;
 
 	/**
 	 * Issues per page.
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $perPage = 50;
 
 	/**
 	 * Was JQL executed.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $executed = false;
 
@@ -98,14 +98,14 @@ class Walker implements \Iterator, \Countable
 	 *
 	 * @var array
 	 */
-	protected $issues = array();
+	protected $issues = [];
 
 	/**
 	 * List of fields to query.
 	 *
-	 * @var string|array|null
+	 * @var array|string|null
 	 */
-	protected $fields = null;
+	protected $fields;
 
 	/**
 	 * Callback.
@@ -117,14 +117,13 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Creates walker instance.
 	 *
-	 * @param Api          $api	  API.
-	 * @param integer|null $per_page Per page.
+	 * @param \chobie\Jira\Api $api API.
+	 * @param int|null $per_page Per page.
 	 */
-	public function __construct(Api $api, $per_page = null)
-	{
+	public function __construct(Api $api, $per_page = null) {
 		$this->api = $api;
 
-		if ( is_numeric($per_page) ) {
+		if (is_numeric($per_page)) {
 			$this->perPage = $per_page;
 		}
 	}
@@ -132,13 +131,12 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Pushes JQL.
 	 *
-	 * @param string            $jql	JQL.
-	 * @param string|array|null $fields Fields.
+	 * @param string $jql JQL.
+	 * @param array|string|null $fields Fields.
 	 *
 	 * @return void
 	 */
-	public function push($jql, $fields = null)
-	{
+	public function push($jql, $fields = null) {
 		$this->jql = $jql;
 		$this->fields = $fields;
 	}
@@ -146,13 +144,12 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Return the current element.
 	 *
+	 * @link http://php.net/manual/en/iterator.current.php
 	 * @return mixed Can return any type.
-	 * @link   http://php.net/manual/en/iterator.current.php
 	 */
 	#[\ReturnTypeWillChange]
-	public function current()
-	{
-		if ( is_callable($this->callback) ) {
+	public function current() {
+		if (is_callable($this->callback)) {
 			$tmp = $this->issues[$this->offset];
 			$callback = $this->callback;
 
@@ -165,94 +162,87 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Move forward to next element.
 	 *
+	 * @link http://php.net/manual/en/iterator.next.php
 	 * @return void Any returned value is ignored.
-	 * @link   http://php.net/manual/en/iterator.next.php
 	 */
 	#[\ReturnTypeWillChange]
-	public function next()
-	{
+	public function next() {
 		$this->offset++;
 	}
 
 	/**
 	 * Return the key of the current element.
 	 *
+	 * @link http://php.net/manual/en/iterator.key.php
 	 * @return mixed scalar on success, or null on failure.
-	 * @link   http://php.net/manual/en/iterator.key.php
 	 */
 	#[\ReturnTypeWillChange]
-	public function key()
-	{
-		if ( $this->startAt > 0 ) {
+	public function key() {
+		if ($this->startAt > 0) {
 			return $this->offset + (($this->startAt - 1) * $this->perPage);
 		}
-		else {
+
 			return 0;
-		}
 	}
 
 	/**
 	 * Checks if current position is valid.
 	 *
-	 * @return boolean The return value will be casted to boolean and then evaluated.
-	 *				 Returns true on success or false on failure.
+	 * @link http://php.net/manual/en/iterator.valid.php
 	 * @throws \Exception When "Walker::push" method wasn't called.
 	 * @throws Api\UnauthorizedException When it happens.
-	 * @link   http://php.net/manual/en/iterator.valid.php
+	 * @return bool The return value will be casted to boolean and then evaluated.
+ * Returns true on success or false on failure.
 	 */
 	#[\ReturnTypeWillChange]
-	public function valid()
-	{
-		if ( is_null($this->jql) ) {
-			throw new \Exception('you have to call Jira_Walker::push($jql, $fields) at first');
+	public function valid() {
+		if ($this->jql === null) {
+			throw new Exception('you have to call Jira_Walker::push($jql, $fields) at first');
 		}
 
-		if ( !$this->executed ) {
+		if (!$this->executed) {
 			try {
 				$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields);
 
 				$this->setResult($result);
 				$this->executed = true;
 
-				if ( $result->getTotal() == 0 ) {
+				if ($result->getTotal() == 0) {
 					return false;
 				}
 
 				return true;
 			}
-			catch ( Api\UnauthorizedException $e ) {
+			catch (Api\UnauthorizedException $e) {
 				throw $e;
 			}
-			catch ( \Exception $e ) {
+			catch (\Exception $e) {
 				error_log($e->getMessage());
 
 				return false;
 			}
-		}
-		else {
-			if ( $this->offset >= $this->max && $this->key() < $this->total ) {
+		} else {
+			if ($this->offset >= $this->max && $this->key() < $this->total) {
 				try {
 					$result = $this->api->search($this->getQuery(), $this->key(), $this->perPage, $this->fields);
 					$this->setResult($result);
 
 					return true;
 				}
-				catch ( Api\UnauthorizedException $e ) {
+				catch (Api\UnauthorizedException $e) {
 					throw $e;
 				}
-				catch ( \Exception $e ) {
+				catch (\Exception $e) {
 					error_log($e->getMessage());
 
 					return false;
 				}
-			}
-			else {
-				if ( ($this->startAt - 1) * $this->perPage + $this->offset < $this->total ) {
+			} else {
+				if (($this->startAt - 1) * $this->perPage + $this->offset < $this->total) {
 					return true;
 				}
-				else {
-					return false;
-				}
+
+				return false;
 			}
 		}
 	}
@@ -260,31 +250,29 @@ class Walker implements \Iterator, \Countable
 	/**
 	 * Rewind the Iterator to the first element.
 	 *
+	 * @link http://php.net/manual/en/iterator.rewind.php
 	 * @return void Any returned value is ignored.
-	 * @link   http://php.net/manual/en/iterator.rewind.php
 	 */
 	#[\ReturnTypeWillChange]
-	public function rewind()
-	{
+	public function rewind() {
 		$this->offset = 0;
 		$this->startAt = 0;
 		$this->current = 0;
 		$this->max = 0;
 		$this->total = null;
 		$this->executed = false;
-		$this->issues = array();
+		$this->issues = [];
 	}
 
 	/**
 	 * Count elements of an object.
 	 *
-	 * @return integer The custom count as an integer.
-	 * @link   http://php.net/manual/en/countable.count.php
+	 * @link http://php.net/manual/en/countable.count.php
+	 * @return int The custom count as an integer.
 	 */
 	#[\ReturnTypeWillChange]
-	public function count()
-	{
-		if ( $this->total === null ) {
+	public function count() {
+		if ($this->total === null) {
 			$this->valid();
 		}
 
@@ -296,13 +284,12 @@ class Walker implements \Iterator, \Countable
 	 *
 	 * @param callable|null $callable Callable.
 	 *
-	 * @return void
 	 * @throws \Exception When not a callable passed.
+	 * @return void
 	 */
-	public function setDelegate($callable)
-	{
-		if ( !is_callable($callable) ) {
-			throw new \Exception('passed argument is not callable');
+	public function setDelegate($callable) {
+		if (!is_callable($callable)) {
+			throw new Exception('passed argument is not callable');
 		}
 
 		$this->callback = $callable;
@@ -315,8 +302,7 @@ class Walker implements \Iterator, \Countable
 	 *
 	 * @return void
 	 */
-	protected function setResult(Api\Result $result)
-	{
+	protected function setResult(ApiResult $result) {
 		$this->total = $result->getTotal();
 		$this->offset = 0;
 		$this->max = $result->getIssuesCount();
@@ -329,8 +315,7 @@ class Walker implements \Iterator, \Countable
 	 *
 	 * @return string
 	 */
-	protected function getQuery()
-	{
+	protected function getQuery() {
 		return $this->jql;
 	}
 

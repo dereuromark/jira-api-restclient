@@ -22,18 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace chobie\Jira\Api\Client;
 
-
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
+use Memcached;
 
-class MemcacheProxyClient implements ClientInterface
-{
+class MemcacheProxyClient implements ClientInterface {
 
 	/**
 	 * Client.
 	 *
-	 * @var ClientInterface
+	 * @var \chobie\Jira\Api\Client\ClientInterface
 	 */
 	protected $client;
 
@@ -47,28 +47,27 @@ class MemcacheProxyClient implements ClientInterface
 	/**
 	 * Create wrapper around other client.
 	 *
-	 * @param ClientInterface $client Client.
-	 * @param string          $server Server.
-	 * @param integer         $port   Port.
+	 * @param \chobie\Jira\Api\Client\ClientInterface $client Client.
+	 * @param string $server Server.
+	 * @param int $port Port.
 	 */
-	public function __construct(ClientInterface $client, $server, $port)
-	{
+	public function __construct(ClientInterface $client, $server, $port) {
 		$this->client = $client;
 
-		$this->mc = new \Memcached();
+		$this->mc = new Memcached();
 		$this->mc->addServer($server, $port);
 	}
 
 	/**
 	 * Sends request to the API server.
 	 *
-	 * @param string                  $method     Request method.
-	 * @param string                  $url        URL.
-	 * @param array                   $data       Request data.
-	 * @param string                  $endpoint   Endpoint.
-	 * @param AuthenticationInterface $credential Credential.
-	 * @param boolean                 $is_file    This is a file upload request.
-	 * @param boolean                 $debug      Debug this request.
+	 * @param string $method Request method.
+	 * @param string $url URL.
+	 * @param array $data Request data.
+	 * @param string $endpoint Endpoint.
+	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $credential Credential.
+	 * @param bool $is_file This is a file upload request.
+	 * @param bool $debug Debug this request.
 	 *
 	 * @return array|string
 	 */
@@ -81,10 +80,10 @@ class MemcacheProxyClient implements ClientInterface
 		$is_file = false,
 		$debug = false
 	) {
-		if ( $method == 'GET' ) {
+		if ($method == 'GET') {
 			$result = $this->getFromCache($url, $data, $endpoint);
 
-			if ( $result ) {
+			if ($result) {
 				// $this->setCache($url, $data, $endpoint, $result);
 				return $result;
 			}
@@ -92,7 +91,7 @@ class MemcacheProxyClient implements ClientInterface
 
 		$result = $this->client->sendRequest($method, $url, $data, $endpoint, $credential);
 
-		if ( $method == 'GET' ) {
+		if ($method == 'GET') {
 			$this->setCache($url, $data, $endpoint, $result);
 		}
 
@@ -102,14 +101,13 @@ class MemcacheProxyClient implements ClientInterface
 	/**
 	 * Retrieves data from cache.
 	 *
-	 * @param string $url      URL.
-	 * @param array  $data     Data.
+	 * @param string $url URL.
+	 * @param array $data Data.
 	 * @param string $endpoint Endpoint.
 	 *
 	 * @return mixed
 	 */
-	protected function getFromCache($url, array $data, $endpoint)
-	{
+	protected function getFromCache($url, array $data, $endpoint) {
 		$key = $endpoint . $url;
 		$key .= http_build_query($data);
 		$key = sha1($key);
@@ -120,15 +118,14 @@ class MemcacheProxyClient implements ClientInterface
 	/**
 	 * Sets data into cache.
 	 *
-	 * @param string $url      URL.
-	 * @param array  $data     Data.
+	 * @param string $url URL.
+	 * @param array $data Data.
 	 * @param string $endpoint Endpoint.
-	 * @param mixed  $result   Result.
+	 * @param mixed $result Result.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
-	protected function setCache($url, array $data, $endpoint, $result)
-	{
+	protected function setCache($url, array $data, $endpoint, $result) {
 		$key = $endpoint . $url;
 		$key .= http_build_query($data);
 		$key = sha1($key);

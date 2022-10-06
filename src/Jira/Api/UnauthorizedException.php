@@ -22,9 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace chobie\Jira\Api;
 
-
-class UnauthorizedException extends Exception
-{
+class UnauthorizedException extends Exception {
 }

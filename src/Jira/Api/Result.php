@@ -22,13 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira\Api;
 
+namespace chobie\Jira\Api;
 
 use chobie\Jira\Issue;
 
-class Result
-{
+class Result {
 
 	/**
 	 * Expand.
@@ -40,21 +39,21 @@ class Result
 	/**
 	 * Start at.
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $startAt;
 
 	/**
 	 * Max results.
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $maxResults;
 
 	/**
 	 * Total
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $total;
 
@@ -70,21 +69,20 @@ class Result
 	 *
 	 * @param array $result Result.
 	 */
-	public function __construct(array $result)
-	{
-		if ( isset($result['expand']) ) {
+	public function __construct(array $result) {
+		if (isset($result['expand'])) {
 			$this->expand = explode(',', $result['expand']);
 		}
 
-		if ( isset($result['startAt']) ) {
+		if (isset($result['startAt'])) {
 			$this->startAt = $result['startAt'];
 		}
 
-		if ( isset($result['maxResults']) ) {
+		if (isset($result['maxResults'])) {
 			$this->maxResults = $result['maxResults'];
 		}
 
-		if ( isset($result['total']) ) {
+		if (isset($result['total'])) {
 			$this->total = $result['total'];
 		}
 
@@ -94,20 +92,18 @@ class Result
 	/**
 	 * Returns total number of records.
 	 *
-	 * @return integer
+	 * @return int
 	 */
-	public function getTotal()
-	{
+	public function getTotal() {
 		return $this->total;
 	}
 
 	/**
 	 * Returns issue count.
 	 *
-	 * @return integer
+	 * @return int
 	 */
-	public function getIssuesCount()
-	{
+	public function getIssuesCount() {
 		return count($this->getIssues());
 	}
 
@@ -116,19 +112,18 @@ class Result
 	 *
 	 * @return array
 	 */
-	public function getIssues()
-	{
-		if ( isset($this->result['issues']) ) {
-			$result = array();
+	public function getIssues() {
+		if (isset($this->result['issues'])) {
+			$result = [];
 
-			foreach ( $this->result['issues'] as $issue ) {
+			foreach ($this->result['issues'] as $issue) {
 				$result[] = new Issue($issue);
 			}
 
 			return $result;
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -136,8 +131,7 @@ class Result
 	 *
 	 * @return array
 	 */
-	public function getResult()
-	{
+	public function getResult() {
 		return $this->result;
 	}
 

@@ -21,17 +21,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  */
+
 namespace chobie\Jira\Api\Authentication;
 
-
-class Anonymous implements AuthenticationInterface
-{
+class Anonymous implements AuthenticationInterface {
 
 	/**
 	 * Creates class instance.
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 	}
 
 	/**
@@ -39,8 +37,7 @@ class Anonymous implements AuthenticationInterface
 	 *
 	 * @return string|null
 	 */
-	public function getCredential()
-	{
+	public function getCredential() {
 		return null;
 	}
 
@@ -49,8 +46,7 @@ class Anonymous implements AuthenticationInterface
 	 *
 	 * @return string|null
 	 */
-	public function getId()
-	{
+	public function getId() {
 		return null;
 	}
 
@@ -59,8 +55,7 @@ class Anonymous implements AuthenticationInterface
 	 *
 	 * @return string|null
 	 */
-	public function getPassword()
-	{
+	public function getPassword() {
 		return null;
 	}
 

@@ -22,11 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace chobie\Jira\Api\Authentication;
 
-
-class Basic implements AuthenticationInterface
-{
+class Basic implements AuthenticationInterface {
 
 	/**
 	 * User ID.
@@ -45,11 +44,10 @@ class Basic implements AuthenticationInterface
 	/**
 	 * Creates class instance.
 	 *
-	 * @param string $user_id  User ID.
+	 * @param string $user_id User ID.
 	 * @param string $password Password.
 	 */
-	public function __construct($user_id, $password)
-	{
+	public function __construct($user_id, $password) {
 		$this->_userId = $user_id;
 		$this->_password = $password;
 	}
@@ -59,8 +57,7 @@ class Basic implements AuthenticationInterface
 	 *
 	 * @return string
 	 */
-	public function getCredential()
-	{
+	public function getCredential() {
 		return base64_encode($this->_userId . ':' . $this->_password);
 	}
 
@@ -69,8 +66,7 @@ class Basic implements AuthenticationInterface
 	 *
 	 * @return string
 	 */
-	public function getId()
-	{
+	public function getId() {
 		return $this->_userId;
 	}
 
@@ -79,8 +75,7 @@ class Basic implements AuthenticationInterface
 	 *
 	 * @return string
 	 */
-	public function getPassword()
-	{
+	public function getPassword() {
 		return $this->_password;
 	}
 

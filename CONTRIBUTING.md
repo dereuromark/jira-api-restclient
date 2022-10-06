@@ -33,14 +33,14 @@ Before running tests, change directory to the root of your repository and run `p
 
 Then run the unit tests as per normal.
 
-N.B. you can study the `.travis.yml` file to see how we run these tests on our build servers by way of example.
+N.B. you can study the `ci.yml` file to see how we run these tests on our build servers by way of example.
 
 ### Running Test Suite
 
 Make sure that you don't break anything with your changes by running:
 
 ```bash
-$> vendor/bin/phpunit
+$> composer test
 ```
 
 ## Checking coding standard violations
@@ -48,7 +48,11 @@ $> vendor/bin/phpunit
 This library uses [PSR2R Coding Standard](https://github.com/php-fig-rectified/psr2r-sniffer) to ensure consistent formatting across the code base. Make sure you haven't introduced any Coding Standard violations by running following command in the root folder of the library:
 
 ```bash
-$> composer test
+$> composer cs-check
+```
+and
+```bash
+$> composer cs-fix
 ```
 
 or by making your IDE ([instructions for PhpStorm](https://www.jetbrains.com/help/phpstorm/using-php-code-sniffer.html)) to check them automatically.

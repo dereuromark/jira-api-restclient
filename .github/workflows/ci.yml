@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: [ '7.3', '7.4', '8.0', '8.1' ]
+        php: [ '7.4', '8.1' ]
       fail-fast: false
     env:
       REPO_URL: http://localhost:8002/
@@ -38,8 +38,8 @@ jobs:
           # PHP 7.x development web server segfaults if timezone not set.
           ini-values: date.timezone=Europe/Paris, error_reporting=-1, display_errors=On
 
-      - name: Configure for PHP >= 7.3
-        if: "${{ matrix.php >= '7.3' }}"
+      - name: Configure for PHP >= 7.4
+        if: "${{ matrix.php >= '7.4' }}"
         run: |
           composer require --no-update --dev symfony/error-handler "^4.4 || ^5.0"
 
@@ -61,4 +61,7 @@ jobs:
           vendor/bin/phpunit
 
       - name: Run phpstan
-        run: composer stan-setup && vendor/bin/phpstan analyse --error-format=github
+        run: vendor/bin/phpstan analyse --error-format=github
+
+      - name: Run CS
+        run: composer cs-check

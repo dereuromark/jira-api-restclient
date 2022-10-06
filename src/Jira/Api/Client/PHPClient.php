@@ -22,22 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace chobie\Jira\Api\Client;
 
+namespace chobie\Jira\Api\Client;
 
 use chobie\Jira\Api\Authentication\Anonymous;
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
 use chobie\Jira\Api\Exception;
 use chobie\Jira\Api\UnauthorizedException;
+use InvalidArgumentException;
 
-class PHPClient implements ClientInterface
-{
+class PHPClient implements ClientInterface {
 
 	/**
 	 * HTTPS support enabled.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $httpsSupport = false;
 
@@ -51,46 +51,43 @@ class PHPClient implements ClientInterface
 	/**
 	 * Create a traditional php client.
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		$wrappers = stream_get_wrappers();
 
-		if ( in_array('https', $wrappers) ) {
+		if (in_array('https', $wrappers)) {
 			$this->httpsSupport = true;
 		}
-
 	}
 
 	/**
 	 * Returns status of HTTP support.
 	 *
-	 * @return boolean
-	 *
 	 * @codeCoverageIgnore
+	 * @return bool
+	 *
 	 */
-	protected function isHttpsSupported()
-	{
+	protected function isHttpsSupported() {
 		return $this->httpsSupport;
 	}
 
 	/**
 	 * Sends request to the API server.
 	 *
-	 * @param string                  $method     Request method.
-	 * @param string                  $url        URL.
-	 * @param array|string            $data       Request data.
-	 * @param string                  $endpoint   Endpoint.
-	 * @param AuthenticationInterface $credential Credential.
-	 * @param boolean                 $is_file    This is a file upload request.
-	 * @param boolean                 $debug      Debug this request.
+	 * @param string $method Request method.
+	 * @param string $url URL.
+	 * @param array|string $data Request data.
+	 * @param string $endpoint Endpoint.
+	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $credential Credential.
+	 * @param bool $is_file This is a file upload request.
+	 * @param bool $debug Debug this request.
 	 *
-	 * @return array|string
 	 * @throws \InvalidArgumentException When non-supported implementation of AuthenticationInterface is given.
 	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
-	 * @throws Exception When request failed due communication error.
-	 * @throws UnauthorizedException When request failed, because user can't be authorized properly.
-	 * @throws Exception When there was empty response instead of needed data.
+	 * @throws \chobie\Jira\Api\Exception When request failed due communication error.
+	 * @throws \chobie\Jira\Api\UnauthorizedException When request failed, because user can't be authorized properly.
+	 * @throws \chobie\Jira\Api\Exception When there was empty response instead of needed data.
 	 * @throws \InvalidArgumentException When "https" wrapper is not available, but http:// is requested.
+	 * @return array|string
 	 */
 	public function sendRequest(
 		$method,
@@ -101,33 +98,33 @@ class PHPClient implements ClientInterface
 		$is_file = false,
 		$debug = false
 	) {
-		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) ) {
-			throw new \InvalidArgumentException(sprintf(
+		if (!($credential instanceof Basic) && !($credential instanceof Anonymous)) {
+			throw new InvalidArgumentException(sprintf(
 				'PHPClient does not support %s authentication.',
-				get_class($credential)
+				get_class($credential),
 			));
 		}
 
-		$header = array();
+		$header = [];
 
-		if ( !($credential instanceof Anonymous) ) {
+		if (!($credential instanceof Anonymous)) {
 			$header[] = 'Authorization: Basic ' . $credential->getCredential();
 		}
 
-		if ( !$is_file ) {
+		if (!$is_file) {
 			$header[] = 'Content-Type: application/json;charset=UTF-8';
 		}
 
-		$context = array(
-			'http' => array(
+		$context = [
+			'http' => [
 				'method' => $method,
 				'header' => implode("\r\n", $header),
 				'ignore_errors' => true,
-			),
-		);
+			],
+		];
 
-		if ( $method == 'POST' || $method == 'PUT' || $method == 'DELETE' ) {
-			if ( $is_file ) {
+		if ($method == 'POST' || $method == 'PUT' || $method == 'DELETE') {
+			if ($is_file) {
 				$filename = preg_replace('/^@/', '', $data['file']);
 				$name = ($data['name'] !== null) ? $data['name'] : basename($filename);
 				$boundary = '--------------------------' . microtime(true);
@@ -139,8 +136,7 @@ class PHPClient implements ClientInterface
 					"Content-Type: application/octet-stream\r\n\r\n" .
 					file_get_contents($filename) . "\r\n";
 				$__data .= '--' . $boundary . "--\r\n";
-			}
-			else {
+			} else {
 				$__data = json_encode($data);
 			}
 
@@ -148,40 +144,39 @@ class PHPClient implements ClientInterface
 
 			$context['http']['header'] = implode("\r\n", $header);
 			$context['http']['content'] = $__data;
-		}
-		elseif ( $method == 'GET' ) {
-			if ( !is_array($data) ) {
-				throw new \InvalidArgumentException('Data must be an array.');
+		} elseif ($method == 'GET') {
+			if (!is_array($data)) {
+				throw new InvalidArgumentException('Data must be an array.');
 			}
 
 			$url .= '?' . http_build_query($data);
 		}
 
 		// @codeCoverageIgnoreStart
-		if ( strpos($endpoint, 'https://') === 0 && !$this->isHttpsSupported() ) {
-			throw new \InvalidArgumentException('does not support https wrapper. please enable openssl extension');
+		if (strpos($endpoint, 'https://') === 0 && !$this->isHttpsSupported()) {
+			throw new InvalidArgumentException('does not support https wrapper. please enable openssl extension');
 		}
 		// @codeCoverageIgnoreEnd
 
-		list ($http_code, $response, $error_message) = $this->doSendRequest($endpoint . $url, $context);
+		[$http_code, $response, $error_message] = $this->doSendRequest($endpoint . $url, $context);
 
 		// Check for 401 code before "$error_message" checking, because it's considered as an error.
-		if ( $http_code == 401 ) {
+		if ($http_code == 401) {
 			throw new UnauthorizedException('Unauthorized');
 		}
 
-		if ( !empty($error_message) ) {
+		if (!empty($error_message)) {
 			throw new Exception(
-				sprintf('Jira request failed: "%s"', $error_message)
+				sprintf('Jira request failed: "%s"', $error_message),
 			);
 		}
 
-		if ( $response === '' && !in_array($http_code, array(201, 204)) ) {
+		if ($response === '' && !in_array($http_code, [201, 204])) {
 			throw new Exception('JIRA Rest server returns unexpected result.');
 		}
 
 		// @codeCoverageIgnoreStart
-		if ( is_null($response) ) {
+		if ($response === null) {
 			throw new Exception('JIRA Rest server returns unexpected result.');
 		}
 		// @codeCoverageIgnoreEnd
@@ -192,42 +187,39 @@ class PHPClient implements ClientInterface
 	/**
 	 * Sends the request.
 	 *
-	 * @param string $url     URL.
-	 * @param array  $context Context.
+	 * @param string $url URL.
+	 * @param array $context Context.
 	 *
 	 * @return array
 	 */
-	protected function doSendRequest($url, array $context)
-	{
+	protected function doSendRequest($url, array $context) {
 		$this->_lastErrorMessage = '';
 
 		/** @var callable $callable */
-		$callable = array($this, 'errorHandler');
+		$callable = [$this, 'errorHandler'];
 		set_error_handler($callable);
 		$response = file_get_contents($url, false, stream_context_create($context));
 		restore_error_handler();
 
-		if ( $http_response_header ) {
+		if ($http_response_header) {
 			preg_match('#HTTP/\d+\.\d+ (\d+)#', $http_response_header[0], $matches);
 			$http_code = $matches[1];
-		}
-		else {
+		} else {
 			$http_code = 0;
 		}
 
-		return array($http_code, $response, $this->_lastErrorMessage);
+		return [$http_code, $response, $this->_lastErrorMessage];
 	}
 
 	/**
 	 * Remembers last error.
 	 *
-	 * @param integer $errno  Error number.
-	 * @param string  $errstr Error message.
+	 * @param int $errno Error number.
+	 * @param string $errstr Error message.
 	 *
 	 * @return void
 	 */
-	public function errorHandler($errno, $errstr)
-	{
+	public function errorHandler($errno, $errstr) {
 		$this->_lastErrorMessage = $errstr;
 	}
 
