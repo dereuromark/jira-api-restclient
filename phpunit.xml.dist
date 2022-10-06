@@ -11,13 +11,11 @@
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
-         syntaxCheck="true"
-         strict="true"
          verbose="true">
 
     <testsuites>
         <testsuite name="Jira_Api Test Suite">
-            <directory>tests</directory>
+            <directory>tests/</directory>
         </testsuite>
     </testsuites>
 

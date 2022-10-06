@@ -28,7 +28,7 @@ To be able to run integration tests locally please follow these steps once:
 3. in the `phpunit.xml` file:
  * uncomment part, where `REPO_URL` environment variable is defined
  * set `REPO_URL` environment variable value to URL, from where repository can be accessed (e.g. `http://localhost/path/to/repository/[:<portNumber>]`)
- 
+
 Before running tests, change directory to the root of your repository and run `php -S localhost:<portNumber>`
 
 Then run the unit tests as per normal.
@@ -45,10 +45,10 @@ $> vendor/bin/phpunit
 
 ## Checking coding standard violations
 
-This library uses [Coding Standard](https://github.com/aik099/CodingStandard) to ensure consistent formatting across the code base. Make sure you haven't introduced any Coding Standard violations by running following command in the root folder of the library:
+This library uses [PSR2R Coding Standard](https://github.com/php-fig-rectified/psr2r-sniffer) to ensure consistent formatting across the code base. Make sure you haven't introduced any Coding Standard violations by running following command in the root folder of the library:
 
 ```bash
-$> vendor/bin/phpcs --standard="vendor/aik099/coding-standard/CodingStandard" src tests
+$> composer test
 ```
 
 or by making your IDE ([instructions for PhpStorm](https://www.jetbrains.com/help/phpstorm/using-php-code-sniffer.html)) to check them automatically.
