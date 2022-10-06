@@ -23,14 +23,14 @@
  * THE SOFTWARE.
  */
 
-namespace chobie\Jira\Api\Client;
+namespace Jira\Api\Client;
 
-use chobie\Jira\Api\Authentication\Anonymous;
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
-use chobie\Jira\Api\Authentication\Basic;
-use chobie\Jira\Api\Exception;
-use chobie\Jira\Api\UnauthorizedException;
 use InvalidArgumentException;
+use Jira\Api\Authentication\Anonymous;
+use Jira\Api\Authentication\AuthenticationInterface;
+use Jira\Api\Authentication\Basic;
+use Jira\Api\Exception;
+use Jira\Api\UnauthorizedException;
 
 class CurlClient implements ClientInterface {
 
@@ -47,15 +47,15 @@ class CurlClient implements ClientInterface {
 	 * @param string $url URL.
 	 * @param array|string $data Request data.
 	 * @param string $endpoint Endpoint.
-	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $credential Credential.
+	 * @param \Jira\Api\Authentication\AuthenticationInterface $credential Credential.
 	 * @param bool $is_file This is a file upload request.
 	 * @param bool $debug Debug this request.
 	 *
 	 * @throws \InvalidArgumentException When non-supported implementation of AuthenticationInterface is given.
 	 * @throws \InvalidArgumentException When data is not an array and http method is GET.
-	 * @throws \chobie\Jira\Api\Exception When request failed due communication error.
-	 * @throws \chobie\Jira\Api\UnauthorizedException When request failed, because user can't be authorized properly.
-	 * @throws \chobie\Jira\Api\Exception When there was empty response instead of needed data.
+	 * @throws \Jira\Api\Exception When request failed due communication error.
+	 * @throws \Jira\Api\UnauthorizedException When request failed, because user can't be authorized properly.
+	 * @throws \Jira\Api\Exception When there was empty response instead of needed data.
 	 * @return array|string
 	 */
 	public function sendRequest(

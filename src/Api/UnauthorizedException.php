@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2014 Tim Otten
+ * Copyright (c) 2014 Shuhei Tanuma
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,43 +20,10 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
-namespace chobie\Jira\Api\Authentication;
+namespace Jira\Api;
 
-class Anonymous implements AuthenticationInterface {
-
-	/**
-	 * Creates class instance.
-	 */
-	public function __construct() {
-	}
-
-	/**
-	 * Returns credential string.
-	 *
-	 * @return string|null
-	 */
-	public function getCredential() {
-		return null;
-	}
-
-	/**
-	 * Returns user id.
-	 *
-	 * @return string|null
-	 */
-	public function getId() {
-		return null;
-	}
-
-	/**
-	 * Returns password.
-	 *
-	 * @return string|null
-	 */
-	public function getPassword() {
-		return null;
-	}
-
+class UnauthorizedException extends Exception {
 }

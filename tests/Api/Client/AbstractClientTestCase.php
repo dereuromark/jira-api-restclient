@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\chobie\Jira\Api\Client;
+namespace Tests\Jira\Api\Client;
 
-use chobie\Jira\Api;
-use chobie\Jira\Api\Authentication\Anonymous;
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
-use chobie\Jira\Api\Authentication\Basic;
+use Jira\Api;
+use Jira\Api\Authentication\Anonymous;
+use Jira\Api\Authentication\AuthenticationInterface;
+use Jira\Api\Authentication\Basic;
 use PHPUnit\Framework\TestCase;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectException;
 
@@ -16,7 +16,7 @@ abstract class AbstractClientTestCase extends TestCase {
 	/**
 	 * Client.
 	 *
-	 * @var \chobie\Jira\Api\Client\ClientInterface
+	 * @var \Jira\Api\Client\ClientInterface
 	 */
 	protected $client;
 
@@ -208,7 +208,7 @@ abstract class AbstractClientTestCase extends TestCase {
 	 * @return void
 	 */
 	public function testUnauthorizedRequest() {
-		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
+		$this->expectException('\Jira\Api\UnauthorizedException');
 		$this->expectExceptionMessage('Unauthorized');
 
 		$this->traceRequest(Api::REQUEST_GET, ['http_code' => 401]);
@@ -218,7 +218,7 @@ abstract class AbstractClientTestCase extends TestCase {
 	 * @return void
 	 */
 	public function testEmptyResponseWithUnknownHttpCode() {
-		$this->expectException('\chobie\Jira\Api\Exception');
+		$this->expectException('\Jira\Api\Exception');
 		$this->expectExceptionMessage('JIRA Rest server returns unexpected result.');
 
 		$this->traceRequest(Api::REQUEST_GET, ['response_mode' => 'empty']);
@@ -275,7 +275,7 @@ abstract class AbstractClientTestCase extends TestCase {
 	 *
 	 * @param string $method Request method.
 	 * @param array $data Request data.
-	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface|null $credential Credential.
+	 * @param \Jira\Api\Authentication\AuthenticationInterface|null $credential Credential.
 	 * @param bool $is_file This is a file upload request.
 	 *
 	 * @return array
@@ -333,7 +333,7 @@ abstract class AbstractClientTestCase extends TestCase {
 	/**
 	 * Creates client.
 	 *
-	 * @return \chobie\Jira\Api\Client\ClientInterface
+	 * @return \Jira\Api\Client\ClientInterface
 	 */
 	abstract protected function createClient();
 

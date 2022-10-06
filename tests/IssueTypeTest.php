@@ -2,7 +2,7 @@
 
 namespace Tests\chobie\Jira;
 
-use chobie\Jira\IssueType;
+use Jira\IssueType;
 use PHPUnit\Framework\TestCase;
 
 class IssueTypeTest extends TestCase {

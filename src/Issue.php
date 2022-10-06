@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-namespace chobie\Jira;
+namespace Jira;
 
 class Issue {
 

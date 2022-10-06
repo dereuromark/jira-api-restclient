@@ -2,7 +2,7 @@
 
 namespace Tests\chobie\Jira;
 
-use chobie\Jira\Api\Authentication\Basic;
+use Jira\Api\Authentication\Basic;
 use PHPUnit\Framework\TestCase;
 
 class BasicTest extends TestCase {

@@ -2,7 +2,7 @@
 
 namespace Tests\chobie\Jira;
 
-use chobie\Jira\Api;
+use Jira\Api;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -18,14 +18,14 @@ class ApiTest extends TestCase {
 	/**
 	 * Api.
 	 *
-	 * @var \chobie\Jira\Api
+	 * @var \Jira\Api
 	 */
 	protected $api;
 
 	/**
 	 * Credential.
 	 *
-	 * @var \chobie\Jira\Api\Authentication\AuthenticationInterface
+	 * @var \Jira\Api\Authentication\AuthenticationInterface
 	 */
 	protected $credential;
 

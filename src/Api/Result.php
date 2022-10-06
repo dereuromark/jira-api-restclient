@@ -23,9 +23,9 @@
  * THE SOFTWARE.
  */
 
-namespace chobie\Jira\Api;
+namespace Jira\Api;
 
-use chobie\Jira\Issue;
+use Jira\Issue;
 
 class Result {
 

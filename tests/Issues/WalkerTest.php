@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\chobie\Jira\Issues;
+namespace Tests\Jira\Issues;
 
-use chobie\Jira\Api\Result;
-use chobie\Jira\Api\UnauthorizedException;
-use chobie\Jira\Issue;
-use chobie\Jira\Issues\Walker;
 use Exception;
+use Jira\Api\Result;
+use Jira\Api\UnauthorizedException;
+use Jira\Issue;
+use Jira\Issues\Walker;
 use PHPUnit\Framework\TestCase;
 use Yoast\PHPUnitPolyfills\Polyfills\AssertStringContains;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectException;
@@ -148,7 +148,7 @@ class WalkerTest extends TestCase {
 	 * @return void
 	 */
 	public function testUnauthorizedExceptionOnFirstPage() {
-		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
+		$this->expectException('\Jira\Api\UnauthorizedException');
 		$this->expectExceptionMessage('Unauthorized');
 
 		$this->api->search('test jql', 0, 5, 'description')->willThrow(new UnauthorizedException('Unauthorized'));
@@ -181,7 +181,7 @@ class WalkerTest extends TestCase {
 	 * @return void
 	 */
 	public function testUnauthorizedExceptionOnSecondPage() {
-		$this->expectException('\chobie\Jira\Api\UnauthorizedException');
+		$this->expectException('\Jira\Api\UnauthorizedException');
 		$this->expectExceptionMessage('Unauthorized');
 
 		// Full 1st page.
@@ -292,7 +292,7 @@ class WalkerTest extends TestCase {
 	 * @param int $issue_count Issue count.
 	 * @param int|null $total Total issues.
 	 *
-	 * @return \chobie\Jira\Api\Result
+	 * @return \Jira\Api\Result
 	 */
 	protected function generateSearchResponse($project_key, $issue_count, $total = null) {
 		$issues = [];
@@ -329,7 +329,7 @@ class WalkerTest extends TestCase {
 	 *
 	 * @param int|null $per_page Per page.
 	 *
-	 * @return \chobie\Jira\Issues\Walker
+	 * @return \Jira\Issues\Walker
 	 */
 	protected function createWalker($per_page = null) {
 		return new Walker($this->api->reveal(), $per_page);

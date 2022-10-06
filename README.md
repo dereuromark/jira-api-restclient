@@ -16,9 +16,9 @@ This library will ensure unforgettable experience when working with Jira through
 
 ```php
 <?php
-use chobie\Jira\Api;
-use chobie\Jira\Api\Authentication\Basic;
-use chobie\Jira\Issues\Walker;
+use Jira\Api;
+use Jira\Api\Authentication\Basic;
+use Jira\Issues\Walker;
 
 $api = new Api(
     'https://your-jira-project.net',

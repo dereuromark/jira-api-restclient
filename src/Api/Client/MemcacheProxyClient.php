@@ -23,9 +23,9 @@
  * THE SOFTWARE.
  */
 
-namespace chobie\Jira\Api\Client;
+namespace Jira\Api\Client;
 
-use chobie\Jira\Api\Authentication\AuthenticationInterface;
+use Jira\Api\Authentication\AuthenticationInterface;
 use Memcached;
 
 class MemcacheProxyClient implements ClientInterface {
@@ -33,7 +33,7 @@ class MemcacheProxyClient implements ClientInterface {
 	/**
 	 * Client.
 	 *
-	 * @var \chobie\Jira\Api\Client\ClientInterface
+	 * @var \Jira\Api\Client\ClientInterface
 	 */
 	protected $client;
 
@@ -47,7 +47,7 @@ class MemcacheProxyClient implements ClientInterface {
 	/**
 	 * Create wrapper around other client.
 	 *
-	 * @param \chobie\Jira\Api\Client\ClientInterface $client Client.
+	 * @param \Jira\Api\Client\ClientInterface $client Client.
 	 * @param string $server Server.
 	 * @param int $port Port.
 	 */
@@ -65,7 +65,7 @@ class MemcacheProxyClient implements ClientInterface {
 	 * @param string $url URL.
 	 * @param array $data Request data.
 	 * @param string $endpoint Endpoint.
-	 * @param \chobie\Jira\Api\Authentication\AuthenticationInterface $credential Credential.
+	 * @param \Jira\Api\Authentication\AuthenticationInterface $credential Credential.
 	 * @param bool $is_file This is a file upload request.
 	 * @param bool $debug Debug this request.
 	 *
