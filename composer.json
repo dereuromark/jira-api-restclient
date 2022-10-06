@@ -16,6 +16,7 @@
     },
     "require-dev": {
         "yoast/phpunit-polyfills": "^1.0",
+        "phpspec/prophecy": "^1.10",
         "phpstan/phpstan": "^1.0.0"
     },
     "autoload": {
